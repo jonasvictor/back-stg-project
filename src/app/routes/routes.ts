@@ -6,12 +6,23 @@ import authMiddleware from "../middleware/authMiddleware";
 
 const routers = Router();
 
-// routers.get('/', (req, res) => {
-//     try {
-//         const file = fs.readFile
-//     } catch {
-
-//     }
+// routers.get('/', async (req, res, next) => {
+//     throw new BadRequestError('Erro lançado do API Error.');
+//     // try {
+//     //     throw new UnauthorizedError('Erro lançado do ApiError.');
+//     // } catch (error) {
+//     //     next(error);
+//     // }
+    
+//     // return res.json('OK');
+//     // try {
+//     //     // const file = fs.readFileSync('teste.txt');
+//     //     // return res.json(file.toString());
+//     //     throw new Error('Erro de teste.');
+//     // } catch (error) {
+//     //     // return res.status(500).json(error);
+//     //     console.log(error);
+//     // }
 // });
 
 routers.use('/usuarios', usuarioRouter);
