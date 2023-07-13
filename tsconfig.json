@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+       "lib": [
+          "es5",
+          "es6"
+       ],
+       "allowJs": true,
+       "target": "es5",
+       "module": "commonjs",
+       "moduleResolution": "node",
+       "outDir": "./build",
+       "rootDir": "./src",
+       "strict": true,
+       "noImplicitAny": true,
+       "strictPropertyInitialization": false,
+       "esModuleInterop": true,
+       "resolveJsonModule":  true,
+       "emitDecoratorMetadata": true, /* Enables experimental support for emitting type metadata for decorators. */
+       "experimentalDecorators": true, /* Enables experimental support for ES7 decorators. */
+       "sourceMap": true,
+       /* Advanced Options */
+       "skipLibCheck": true, /* Skip type checking of declaration files. */
+       "forceConsistentCasingInFileNames": true
+    }
+ }
