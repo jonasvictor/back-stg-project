@@ -15,7 +15,6 @@ const createUsuario = async (usuario: IUsuario): Promise<IUsuario> => {
 
 const getUsuarioById = async (id: number): Promise<IUsuario | undefined> => {
   const usuario: Usuario | undefined | null = await usuarioRepository.findOne({ where: { id }});
-  // const usuario: Usuario | undefined | null = await usuarioRepository.findOneBy({ id: Number(id) });
   if (usuario !== null) {
     return {
       id: usuario.id,

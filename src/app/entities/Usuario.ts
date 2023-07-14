@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert, BeforeUpdate, Uni
 import bcrypt from 'bcryptjs';
 
 @Entity('usuario')
-@Unique(['email'])
+// @Unique(['email'])
 class Usuario {
     @PrimaryGeneratedColumn('increment')
     id: number;
@@ -10,7 +10,7 @@ class Usuario {
     @Column('varchar', { length: 100 })
     name: string;
 
-    @Column('varchar', { length: 255 })
+    @Column({type: 'varchar', length: 255 , unique: true})
     email: string;
 
     @Column('varchar', { length: 255 })
