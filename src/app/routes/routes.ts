@@ -26,7 +26,7 @@ const routers = Router();
 // });
 
 routers.use('/usuarios', usuarioRouter);
-routers.use('/auth', AuthController.login);
+routers.use('/login', AuthController.login);
 routers.use('/usuario', authMiddleware, IndexController.index);
 routers.use('/perfil', authMiddleware, AuthController.getPerfil);
 

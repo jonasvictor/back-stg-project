@@ -3,7 +3,7 @@ import Usuario from "../entities/Usuario";
 import { AppDataSource } from "../../database/data-source";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { BadRequestError, UnauthorizedError } from "../helpers/api-erros";
+import { UnauthorizedError } from "../helpers/api-erros";
 import { getSession, getToken, setSession } from "../../redis/sessionManager";
 
 // type JwtPayload = {
@@ -18,13 +18,14 @@ class AuthController {
     const usuario = await repository.findOne({ where: { email } });
 
     if (!usuario) {
-      throw new BadRequestError('Email ou senha inválidos.');
+      throw new UnauthorizedError('Acesso não autorizado.');
     }
 
     const isValidSenha = await bcrypt.compare(senha, usuario.senha);
 
     if (!isValidSenha) {
-      throw new BadRequestError('Email ou senha inválidos.');
+      throw new UnauthorizedError('Acesso não autorizado.');
+      // throw new BadRequestError('Email ou senha inválidos.');
     }
 
     const token = jwt.sign({ id: usuario.id }, process.env.JWT_PASS ?? '', { expiresIn: '12h' });
