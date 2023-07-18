@@ -22,7 +22,7 @@ const usuarioRouter = Router();
 //   }
 // });
 
-usuarioRouter.get('/', async (_req: Request, res: Response): Promise<Response> => {
+usuarioRouter.get('/listar', async (_req: Request, res: Response): Promise<Response> => {
 
     const buscaUsuarios: IUsuario[] = await UsuarioRepository.getUsuarios();
     // Remove a propriedade 'senha' de cada usuário
