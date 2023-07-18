@@ -3,30 +3,64 @@ import Usuario from "../entities/Usuario";
 import { AppDataSource } from "../../database/data-source";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { UnauthorizedError } from "../helpers/api-erros";
+import { getSession, getToken, setSession } from "../../redis/sessionManager";
+
+// type JwtPayload = {
+//   id: number;
+// }
 
 class AuthController {
-  async authenticate(req: Request, res: Response) {
+  async login(req: Request, res: Response) {
     const repository = AppDataSource.getRepository(Usuario);
     const { email, senha } = req.body;
 
     const usuario = await repository.findOne({ where: { email } });
 
     if (!usuario) {
-      return res.sendStatus(401);
+      throw new UnauthorizedError('Acesso não autorizado.');
     }
 
-    const isValidPassword = await bcrypt.compare(senha, usuario.senha);
+    const isValidSenha = await bcrypt.compare(senha, usuario.senha);
 
-    if (!isValidPassword) {
-      return res.sendStatus(401);
+    if (!isValidSenha) {
+      throw new UnauthorizedError('Acesso não autorizado.');
+      // throw new BadRequestError('Email ou senha inválidos.');
     }
 
-    const token = jwt.sign({ id: usuario.id }, 'secret', { expiresIn: '1d' });
+    const token = jwt.sign({ id: usuario.id }, process.env.JWT_PASS ?? '', { expiresIn: '12h' });
+    
+    const { senha: senhaUsuario, ...usuarioLoginSemSenha } = usuario;
+
+    await setSession(token, usuarioLoginSemSenha);
 
     return res.json({
-      usuario,
+      usuario: usuarioLoginSemSenha,
       token
     });
+  };
+
+  async getPerfil(req: Request, res: Response) {
+
+    console.log(req.headers);
+
+    const token = getToken(req.headers)
+
+    return res.json( await getSession(token));
+    
+
+    // const usuario = await AppDataSource.getRepository(Usuario).findOne({ where: { id } });
+
+    // if (!usuario) {
+    //   throw new UnauthorizedError('Não autorizado');
+    // }
+    
+    // const { senha: senhaUsuario, ...usuarioLogadoSemSenha } = usuario;
+
+    // req.usuario = usuarioLogadoSemSenha;
+
+    // return res.json({});
+    
   };
 };
 

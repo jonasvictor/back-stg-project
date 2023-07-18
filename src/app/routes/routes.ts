@@ -2,7 +2,7 @@ import { Router } from "express";
 import usuarioRouter from "../controllers/UsuarioController";
 import AuthController from "../controllers/AuthController";
 import IndexController from "../controllers/IndexController";
-import authMiddleware from "../middleware/authMiddleware";
+import { authMiddleware } from "../middleware/authMiddleware";
 
 const routers = Router();
 
@@ -26,7 +26,8 @@ const routers = Router();
 // });
 
 routers.use('/usuarios', usuarioRouter);
-routers.use('/auth', AuthController.authenticate);
+routers.use('/login', AuthController.login);
 routers.use('/usuario', authMiddleware, IndexController.index);
+routers.use('/perfil', authMiddleware, AuthController.getPerfil);
 
 export default routers;
