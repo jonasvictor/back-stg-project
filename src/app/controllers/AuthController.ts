@@ -4,7 +4,7 @@ import { AppDataSource } from "../../database/data-source";
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { UnauthorizedError } from "../helpers/api-erros";
-import { getSession, getToken, setSession } from "../../redis/sessionManager";
+import { getSession, getToken, removeSession, setSession } from "../../redis/sessionManager";
 
 // type JwtPayload = {
 //   id: number;
@@ -48,20 +48,31 @@ class AuthController {
 
     return res.json( await getSession(token));
     
-
-    // const usuario = await AppDataSource.getRepository(Usuario).findOne({ where: { id } });
-
-    // if (!usuario) {
-    //   throw new UnauthorizedError('Não autorizado');
-    // }
-    
-    // const { senha: senhaUsuario, ...usuarioLogadoSemSenha } = usuario;
-
-    // req.usuario = usuarioLogadoSemSenha;
-
-    // return res.json({});
-    
   };
+
+  async logout(req: Request, res: Response) {
+    const token = req.headers.authorization?.split(' ')[1];
+    
+    // if (!token) {
+    //   throw new ForbiddenError('Não autorizado');
+    // }
+
+    // Remover sessão associada ao token
+    console.log('Logout realizado com sucesso')
+    return res.json( await removeSession(token));
+  }
 };
 
 export default new AuthController();
+
+// const usuario = await AppDataSource.getRepository(Usuario).findOne({ where: { id } });
+
+// if (!usuario) {
+//   throw new UnauthorizedError('Não autorizado');
+// }
+
+// const { senha: senhaUsuario, ...usuarioLogadoSemSenha } = usuario;
+
+// req.usuario = usuarioLogadoSemSenha;
+
+// return res.json({});

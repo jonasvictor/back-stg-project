@@ -27,7 +27,8 @@ const routers = Router();
 
 routers.use('/usuarios', usuarioRouter);
 routers.use('/login', AuthController.login);
-routers.use('/usuario', authMiddleware, IndexController.index);
+routers.use('/logout', AuthController.logout);
 routers.use('/perfil', authMiddleware, AuthController.getPerfil);
+routers.use('/usuario', authMiddleware, IndexController.index);
 
 export default routers;

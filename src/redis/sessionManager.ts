@@ -19,3 +19,9 @@ export function getToken(headers: any) {
     const token = headers['authorization'].split(' ')[1];
     return token
 }
+
+export async function removeSession(key = '') {
+    await client.del(key);
+
+    return true;
+}
