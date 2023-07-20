@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express';
 import UsuarioRepository from '../repositories/UsuarioRepository';
 import IUsuario from '../interface/IUsuario';
-import { BadRequestError, InternalServerError, NotFoundError } from '../helpers/api-erros';
+import { InternalServerError, NotFoundError } from '../helpers/api-erros';
 
 const usuarioRouter = Router();
 
@@ -22,7 +22,7 @@ const usuarioRouter = Router();
 //   }
 // });
 
-usuarioRouter.get('/listar', async (_req: Request, res: Response): Promise<Response> => {
+usuarioRouter.get('/', async (_req: Request, res: Response): Promise<Response> => {
 
     const buscaUsuarios: IUsuario[] = await UsuarioRepository.getUsuarios();
     // Remove a propriedade 'senha' de cada usuário
@@ -66,7 +66,7 @@ usuarioRouter.post('/', async (req: Request, res: Response): Promise<Response> =
 // usuarioRouter.get('/:id', async (req: Request, res: Response): Promise<Response> => {
 //   try {
 //     const id: number = parseInt(req.params.id);
-//     const usuario: IUsuario | undefined = await UsuarioRepository.getUsuarioById(id);
+//     const usuario: IUsuario | undefined = await UsuarioRepository.getUsuarioId(id);
 //     if (usuario) {
 //       return res.status(200).json(usuario);
 //     } else {
@@ -80,7 +80,7 @@ usuarioRouter.post('/', async (req: Request, res: Response): Promise<Response> =
 usuarioRouter.get('/:id', async (req: Request, res: Response): Promise<Response> => {
 
     const id: number = parseInt(req.params.id);
-    const usuario: IUsuario | undefined = await UsuarioRepository.getUsuarioById(id);
+    const usuario: IUsuario | undefined = await UsuarioRepository.getUsuarioId(id);
 
     if (!usuario) {
       throw new NotFoundError('O ID fornecido não corresponde a nenhum usuário registrado. Verifique o ID e tente novamente.');

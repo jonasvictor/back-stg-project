@@ -13,7 +13,7 @@ const createUsuario = async (usuario: IUsuario): Promise<IUsuario> => {
   return usuarioRepository.save(novoUsuario);
 };
 
-const getUsuarioById = async (id: number): Promise<IUsuario | undefined> => {
+const getUsuarioId = async (id: number): Promise<IUsuario | undefined> => {
   const usuario: Usuario | undefined | null = await usuarioRepository.findOne({ where: { id }});
   if (usuario !== null) {
     return {
@@ -49,4 +49,4 @@ const deleteUsuario = async (id: number): Promise<IUsuario | null> => {
 
 };
 
-export default { getUsuarios, createUsuario, updateUsuario, getUsuarioById, deleteUsuario };
+export default { getUsuarios, createUsuario, updateUsuario, getUsuarioId, deleteUsuario };
