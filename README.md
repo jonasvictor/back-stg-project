@@ -10,11 +10,12 @@ Steps to run this project:
 
 # Projeto Backend
 
-[Descreva aqui o propósito do projeto backend em algumas frases.]
+CRUD de usuários e transações.
+[Melhorar descrição]
 
 ## Pré-requisitos
 
-Antes de iniciar o projeto, você precisará ter os seguintes pré-requisitos instalados em sua máquina:
+Antes de iniciar o projeto, você precisará ter os seguintes pré-requisitos instalados:
 
 - Docker
 - Node.js (recomendado a versão 16.20.1)
@@ -49,8 +50,8 @@ Siga os passos abaixo para iniciar o projeto:
 - Postgres
 - TypeORM
 - Redis
-- JWT (JSON Web Tokens)
+- JWT
 
 ## Endpoints
 
-[Descreva aqui todos os endpoints disponíveis no projeto, seus propósitos e os parâmetros necessários para cada um deles.]
+[Falta adicionar]
