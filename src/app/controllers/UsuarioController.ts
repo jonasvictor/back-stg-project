@@ -1,150 +1,96 @@
 import { Request, Response, Router } from 'express';
 import UsuarioRepository from '../repositories/UsuarioRepository';
 import IUsuario from '../interface/IUsuario';
-import { InternalServerError, NotFoundError } from '../helpers/api-erros';
+import { BadRequestError, InternalServerError, NotFoundError } from '../helpers/api-erros';
+import { AppDataSource } from '../../database/data-source';
+import Usuario from '../entities/Usuario';
 
 const usuarioRouter = Router();
 
-// usuarioRouter.get('/', async (_req: Request, res: Response): Promise<Response> => {
-//   try {
-//     const usuarios: IUsuario[] = await UsuarioRepository.getUsuarios();
-
-//     // Remove a propriedade 'senha' de cada usuário
-//     const removeSenhas = usuarios.map(usuario => {
-//       const removeSenha = Object.assign({}, usuario);
-//       delete removeSenha.senha;
-//       return removeSenha;
-//     });
-
-//     return res.status(200).json(removeSenhas);
-//   } catch (error) {
-//     return res.status(500).json({ error: 'Erro ao buscar usuários' });
-//   }
-// });
-
+// Rota para listar todos os usuários
 usuarioRouter.get('/', async (_req: Request, res: Response): Promise<Response> => {
+  const usuarioRepository = AppDataSource.getRepository(Usuario);
 
-    const buscaUsuarios: IUsuario[] = await UsuarioRepository.getUsuarios();
-    // Remove a propriedade 'senha' de cada usuário
-    const removeSenhas = buscaUsuarios.map(usuario => {
-      const removeSenha = Object.assign({}, usuario);
-      delete removeSenha.senha;
-      return removeSenha;
-    });
+  try {
+    // Busca todos os usuários junto com suas transações associadas
+    const usuarios = await usuarioRepository.createQueryBuilder("usuario")
+      .leftJoinAndSelect("usuario.transacoes", "transacao")
+      .select(["usuario.id", "usuario.name", "usuario.email"])
+      .addSelect(["transacao.id", "transacao.usuario_id", "transacao.tipo_id", "transacao.status_id", "transacao.valor", "transacao.data"])
+      .orderBy("usuario.id", "ASC")
+      .getMany();
 
-    if (!buscaUsuarios) {
-      throw new InternalServerError('Houve um problema ao buscar os usuários no banco de dados.');
-    }
-    
-    return res.status(200).json(removeSenhas);
+    // Retorna a lista de usuários
+    return res.status(200).json(usuarios);
+
+  } catch (error) {
+    return res.status(500).json({ message: "Erro ao buscar os usuários no banco de dados." });
+  }
 });
 
-// usuarioRouter.post('/', async (req: Request, res: Response): Promise<Response> => {
-//   try {
-//     const { name, email, senha }: IUsuario = req.body;
-//     const usuario: IUsuario = { name, email, senha };
-//     const usuarioCriado: IUsuario = await UsuarioRepository.createUsuario(usuario);
-//     return res.status(201).json(usuarioCriado);
-//   } catch (error) {
-//     return res.status(500).json({ error: 'Erro ao criar usuário' });
-//   }
-// });
-
+// Rota para criar um novo usuário
 usuarioRouter.post('/', async (req: Request, res: Response): Promise<Response> => {
+  const { name, email, senha }: IUsuario = req.body;
 
-    const { name, email, senha }: IUsuario = req.body;
-    const usuario: IUsuario = { name, email, senha };
-    const usuarioCriado: IUsuario = await UsuarioRepository.createUsuario(usuario);
+  // Verifica se os campos obrigatórios foram preenchidos
+  if (!name || !email || !senha) {
+    throw new BadRequestError('Todos os campos devem ser preenchidos.');
+  }
 
-    if (!usuarioCriado) {
-      throw new InternalServerError('Houve um problema ao criar o usuário no banco de dados.');
-    }
+  // Cria um novo usuário chamando a função do repository
+  const usuarioCriado: IUsuario = await UsuarioRepository.createUsuario({ name, email, senha });
 
-    return res.status(201).json(usuarioCriado);
-  });
+  if (!usuarioCriado) {
+    throw new InternalServerError('Houve um problema ao criar o usuário no banco de dados.');
+  }
 
-// usuarioRouter.get('/:id', async (req: Request, res: Response): Promise<Response> => {
-//   try {
-//     const id: number = parseInt(req.params.id);
-//     const usuario: IUsuario | undefined = await UsuarioRepository.getUsuarioId(id);
-//     if (usuario) {
-//       return res.status(200).json(usuario);
-//     } else {
-//       return res.status(404).json({ error: 'Usuário não encontrado' });
-//     }
-//   } catch (error) {
-//     return res.status(500).json({ error: 'Erro ao buscar usuário' });
-//   }
-// });
+  // Retorna o usuário criado
+  return res.status(201).json(usuarioCriado);
+});
 
+// Rota para obter um usuário pelo seu ID
 usuarioRouter.get('/:id', async (req: Request, res: Response): Promise<Response> => {
+  const id: number = parseInt(req.params.id);
+  const usuario: IUsuario | undefined = await UsuarioRepository.getUsuarioId(id);
 
-    const id: number = parseInt(req.params.id);
-    const usuario: IUsuario | undefined = await UsuarioRepository.getUsuarioId(id);
+  if (!usuario) {
+    throw new NotFoundError('O ID fornecido não corresponde a nenhum usuário registrado. Verifique o ID e tente novamente.');
+  }
 
-    if (!usuario) {
-      throw new NotFoundError('O ID fornecido não corresponde a nenhum usuário registrado. Verifique o ID e tente novamente.');
-    }
-
-    return res.status(200).json(usuario);
+  // Retorna o usuário
+  return res.status(200).json(usuario);
 });
 
-// usuarioRouter.put('/:id', async (req: Request, res: Response): Promise<Response> => {
-//   try {
-//     const { id } = req.params;
-//     const { name, email }: IUsuario = req.body;
-//     const usuario: IUsuario = { name, email };
-//     const usuarioAtualizado: IUsuario | undefined = await UsuarioRepository.updateUsuario(Number(id), usuario);
-    
-//     if (!usuarioAtualizado) {
-//       return res.status(404).json({ error: 'Usuário não encontrado' });
-//     }
-    
-//     return res.status(200).json(usuarioAtualizado);
-//   } catch (error) {
-//     return res.status(500).json({ error: 'Erro ao atualizar usuário' });
-//   }
-// });
-
+// Rota para atualizar um usuário pelo seu ID
 usuarioRouter.put('/:id', async (req: Request, res: Response): Promise<Response> => {
+  const { id } = req.params;
+  const { name, email }: IUsuario = req.body;
+  const usuario: IUsuario = { name, email };
 
-    const { id } = req.params;
-    const { name, email }: IUsuario = req.body;
-    const usuario: IUsuario = { name, email };
-    const usuarioAtualizado: IUsuario | undefined = await UsuarioRepository.updateUsuario(Number(id), usuario);
-    
-    if (!usuarioAtualizado) {
-      throw new NotFoundError('O ID fornecido não corresponde a nenhum usuário registrado. Verifique o ID e tente novamente.');
-    }
-    
-    return res.status(200).json(usuarioAtualizado);
+  // Atualiza o usuário chamando a função do repository
+  const usuarioAtualizado: IUsuario | undefined = await UsuarioRepository.updateUsuario(Number(id), usuario);
+
+  if (!usuarioAtualizado) {
+    throw new NotFoundError('O ID fornecido não corresponde a nenhum usuário registrado. Verifique o ID e tente novamente.');
+  }
+
+  // Retornar o usuário atualizado
+  return res.status(200).json(usuarioAtualizado);
 });
 
-// usuarioRouter.delete('/:id', async (req: Request, res: Response): Promise<Response> => {
-//   try {
-//     const { id } = req.params;
-//     const usuarioExcluido: IUsuario | null = await UsuarioRepository.deleteUsuario(Number(id));
-
-//     if (usuarioExcluido === null) {
-//       return res.status(404).json({ error: 'Usuário não encontrado' });
-//     }
-
-//     return res.status(200).json({ message: 'Usuário excluído com sucesso' });
-//   } catch (error) {
-//     return res.status(500).json({ error: 'Erro ao excluir usuário' });
-//   }
-// });
-
+// Rota para excluir um usuário pelo seu ID
 usuarioRouter.delete('/:id', async (req: Request, res: Response): Promise<Response> => {
+  const { id } = req.params;
 
-    const { id } = req.params;
-    const usuarioExcluido: IUsuario | null = await UsuarioRepository.deleteUsuario(Number(id));
+  // Excluir o usuário chamando a função do repository
+  const usuarioExcluido: IUsuario | null = await UsuarioRepository.deleteUsuario(Number(id));
 
-    if (usuarioExcluido === null) {
-      throw new NotFoundError('O ID fornecido não corresponde a nenhum usuário registrado. Verifique o ID e tente novamente.');
-    }
+  if (usuarioExcluido === null) {
+    throw new NotFoundError('O ID fornecido não corresponde a nenhum usuário registrado. Verifique o ID e tente novamente.');
+  }
 
-    return res.status(200).json({ message: 'Usuário excluído com sucesso' });
+  // Retorna uma mensagem de sucesso
+  return res.status(200).json({ message: 'Usuário excluído com sucesso' });
 });
 
 export default usuarioRouter;
