@@ -12,18 +12,19 @@ app.use(cors());
 
 app.use(express.json());
 
-app.use(routers)
+app.use(routers);
 
+// Inicializa a conexão com o banco de dados através do TypeORM
 AppDataSource.initialize().then(async () => {
-    // app.use((error: Error, req: Request, res: Response, next: NextFunction) => {
-    //     console.log(error);
-    //     return res.json('Caiu no middleware de erro.')
-    // })
-    app.use(errorMiddleware)
+
+    app.use(errorMiddleware);
+
     console.log('Database connected');
+
     app.listen(process.env.PORT, () => {
         console.log(`Server started on port ${process.env.PORT}`);
     });
+
 }).catch((error) => {
     console.log('Database connection failed');
     console.log(error);
