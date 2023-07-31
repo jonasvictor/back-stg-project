@@ -131,13 +131,13 @@ const getExtratoTransacoesUsuarioController = async (req: Request, res: Response
     throw new BadRequestError('Erro ao gerar extrato de transações. Usuário não encontrado.');
   }
 
-    const extratoTransacoes = await getExtratoTransacoesUsuario(Number(usuario_id)); // Passar data inicio e fim.
+  const extratoTransacoes = await getExtratoTransacoesUsuario(Number(usuario_id)); // Passar data inicio e fim.
     
     // if (!extratoTransacoes) {
     //   throw new BadRequestError('Erro ao gerar extrato de transações do usuário');
     // }
     // Retorna o extrato
-    return res.status(200).json(extratoTransacoes);
+  return res.status(200).json(extratoTransacoes);
 };
 
 // Busca o extrato dos depoósitos do usuário
