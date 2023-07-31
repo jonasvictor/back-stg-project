@@ -1,9 +1,9 @@
 import { Request, Response, Router } from 'express';
-import UsuarioRepository from '../repositories/UsuarioRepository';
 import IUsuario from '../interface/IUsuario';
 import { BadRequestError, InternalServerError, NotFoundError } from '../helpers/api-erros';
 import { AppDataSource } from '../../database/data-source';
 import Usuario from '../entities/Usuario';
+import { createUsuario, deleteUsuario, getUsuarioId, updateUsuario } from '../repositories/UsuarioRepository';
 
 const usuarioRouter = Router();
 
@@ -38,7 +38,7 @@ usuarioRouter.post('/', async (req: Request, res: Response): Promise<Response> =
   }
 
   // Cria um novo usuário chamando a função do repository
-  const usuarioCriado: IUsuario = await UsuarioRepository.createUsuario({ name, email, senha });
+  const usuarioCriado: IUsuario = await createUsuario({ name, email, senha });
 
   if (!usuarioCriado) {
     throw new InternalServerError('Houve um problema ao criar o usuário no banco de dados.');
@@ -51,7 +51,7 @@ usuarioRouter.post('/', async (req: Request, res: Response): Promise<Response> =
 // Rota para obter um usuário pelo seu ID
 usuarioRouter.get('/:id', async (req: Request, res: Response): Promise<Response> => {
   const id: number = parseInt(req.params.id);
-  const usuario: IUsuario | undefined = await UsuarioRepository.getUsuarioId(id);
+  const usuario: IUsuario | undefined = await getUsuarioId(id);
 
   if (!usuario) {
     throw new NotFoundError('O ID fornecido não corresponde a nenhum usuário registrado. Verifique o ID e tente novamente.');
@@ -68,7 +68,7 @@ usuarioRouter.put('/:id', async (req: Request, res: Response): Promise<Response>
   const usuario: IUsuario = { name, email };
 
   // Atualiza o usuário chamando a função do repository
-  const usuarioAtualizado: IUsuario | undefined = await UsuarioRepository.updateUsuario(Number(id), usuario);
+  const usuarioAtualizado: IUsuario | undefined = await updateUsuario(Number(id), usuario);
 
   if (!usuarioAtualizado) {
     throw new NotFoundError('O ID fornecido não corresponde a nenhum usuário registrado. Verifique o ID e tente novamente.');
@@ -83,7 +83,7 @@ usuarioRouter.delete('/:id', async (req: Request, res: Response): Promise<Respon
   const { id } = req.params;
 
   // Excluir o usuário chamando a função do repository
-  const usuarioExcluido: IUsuario | null = await UsuarioRepository.deleteUsuario(Number(id));
+  const usuarioExcluido: IUsuario | null = await deleteUsuario(Number(id));
 
   if (usuarioExcluido === null) {
     throw new NotFoundError('O ID fornecido não corresponde a nenhum usuário registrado. Verifique o ID e tente novamente.');
