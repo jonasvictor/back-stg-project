@@ -126,11 +126,16 @@ const getSaldoUsuarioController = async (req: Request, res: Response): Promise<R
 const getExtratoTransacoesUsuarioController = async (req: Request, res: Response): Promise<Response> => {
   const { usuario_id } = req.params; // data_inicio, data_fim
 
+  const usuarioExiste = await getUsuarioId(Number(usuario_id));
+  if (!usuarioExiste) {
+    throw new BadRequestError('Erro ao gerar extrato de transações. Usuário não encontrado.');
+  }
+
     const extratoTransacoes = await getExtratoTransacoesUsuario(Number(usuario_id)); // Passar data inicio e fim.
     
-    if (!extratoTransacoes) {
-      throw new BadRequestError('Erro ao obter o extrato de transações do usuário');
-    }
+    // if (!extratoTransacoes) {
+    //   throw new BadRequestError('Erro ao gerar extrato de transações do usuário');
+    // }
     // Retorna o extrato
     return res.status(200).json(extratoTransacoes);
 };
@@ -139,26 +144,36 @@ const getExtratoTransacoesUsuarioController = async (req: Request, res: Response
 const getExtratoDepositoUsuarioController = async (req: Request, res: Response): Promise<Response> => {
   const { usuario_id } = req.params;
 
-    const extratoDeposito = await getExtratoDepositoUsuario(Number(usuario_id));
+  const usuarioExiste = await getUsuarioId(Number(usuario_id));
+  if (!usuarioExiste) {
+    throw new BadRequestError('Erro ao gerar extrato de depósito. Usuário não encontrado.');
+  }
 
-    if (!extratoDeposito) {
-      throw new BadRequestError('Erro ao obter o extrato de depósito do usuário');
-    }
+  const extratoDeposito = await getExtratoDepositoUsuario(Number(usuario_id));
+
+    // if (!extratoDeposito) {
+    //   throw new BadRequestError('Erro ao gerar extrato de depósito do usuário');
+    // }
     // Retorna o extrato
-    return res.status(200).json(extratoDeposito);
+  return res.status(200).json(extratoDeposito);
 };
 
 // Busca o extrato dos saques do usuário
 const getExtratoSaqueUsuarioController = async (req: Request, res: Response): Promise<Response> => {
   const { usuario_id } = req.params;
 
-    const extratoSaque = await getExtratoSaqueUsuario(Number(usuario_id));
+  const usuarioExiste = await getUsuarioId(Number(usuario_id));
+  if (!usuarioExiste) {
+    throw new BadRequestError('Erro ao gerar extrato de saque. Usuário não encontrado.');
+  }
 
-    if (!extratoSaque) {
-      throw new BadRequestError('Erro ao obter o extrato de saque do usuário');
-    }
+  const extratoSaque = await getExtratoSaqueUsuario(Number(usuario_id));
+
+    // if (!extratoSaque) {
+    //   throw new BadRequestError('Erro ao gerar extrato de saque do usuário');
+    // }
     // Retorna o extrato
-    return res.status(200).json(extratoSaque);
+  return res.status(200).json(extratoSaque);
 };
 
 export default {
