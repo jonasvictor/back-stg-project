@@ -1,8 +1,9 @@
-import { Response } from 'express';
+import { log } from 'console';
 import { AppDataSource } from '../../database/data-source';
 import Transacao from '../entities/Transacao';
 import { BadRequestError, NotFoundError } from '../helpers/api-erros';
 import ITransacao from '../interface/ITransacao';
+import Usuario from '../entities/Usuario';
 
 const transacaoRepository = AppDataSource.getRepository(Transacao);
 
@@ -97,8 +98,19 @@ const deleteTransacao = async (id: number): Promise<ITransacao | null> => {
 
 
 // Função para criar uma transação do tipo depósito
-const createDeposito = async (valor: number, usuario_id: number): Promise<ITransacao> => {
+const createDeposito = async (valor: number, usuario_id: number): Promise<ITransacao | null> => {
 
+   // Busca o usuário pelo ID
+  //  const usuarioEsixte: Usuario | null = await usuarioRepository.findOne({ where: { id: usuario_id } });
+  //  if (usuarioEsixte !== null) {
+  //    throw new NotFoundError('O usuário não foi encontrado.');
+  //  }
+
+  const valorDeposito: number = valor;
+  if (valorDeposito <= 0) {
+    throw new BadRequestError('O valor do depósito deve ser maior que zero.');
+  }
+  
   // Cria o depósito
   const deposito: ITransacao = await createTransacao({
     tipo_id: 3, // Depósito
@@ -123,15 +135,25 @@ const createDeposito = async (valor: number, usuario_id: number): Promise<ITrans
 };
 
 // Função para criar uma transação do tipo saque
-const createSaque = async (valor: number, usuario_id: number): Promise<ITransacao> => {
+const createSaque = async (valor: number, usuario_id: number): Promise<ITransacao | null> => {
+
+  // Busca o usuário pelo ID
+  // const usuarioEsixte: Transacao | null = await transacaoRepository.findOne({ where: { id: usuario_id } });
+  // if (usuarioEsixte !== null) {
+  //   throw new NotFoundError('O usuário não foi encontrado.');
+  // }
 
   // Busca saldo atual do usuário
   const saldoAtual: number = await getSaldoUsuario(usuario_id) || 0;
   
   // Verifica se o saldo é suficiente para realizar o saque
-  if (valor > saldoAtual) {
-    throw new BadRequestError('Saldo insuficiente para realizar o saque.');
-  }
+  if (valor > saldoAtual || valor <= 0) {
+    throw new BadRequestError('O valor do saque não pode ser acima do seu saldo atual.');
+  } 
+
+  // if (valor <= saldoAtual && valor > 0) {
+
+  // } 
   
   // Cria o saque
   const saque: ITransacao = await createTransacao({
@@ -160,6 +182,7 @@ const createSaque = async (valor: number, usuario_id: number): Promise<ITransaca
 // Busca o saldo de um usuário
 const getSaldoUsuario = async (usuario_id: number): Promise<number | undefined> => {
 
+  // Busca todas as transações concluídas do usuário pelo ID no db
   const transacoesConcluidas = await transacaoRepository.find({ where: { usuario_id, status_id: 2 } });
   
   // Calcula o saldo somando os valores das transações concluídas do usuário
@@ -175,7 +198,7 @@ const getSaldoUsuario = async (usuario_id: number): Promise<number | undefined> 
 const getExtratoTransacoesUsuario = async (usuario_id: number): Promise<ITransacao[]> => {
   // Busca todas as transações do usuário pelo ID no db
   const extratoTransacoes = await transacaoRepository.find({
-    where: { usuario_id },
+    where: { usuario_id }, // Passar Data inicio e fim
     relations: ['usuario'],
     select: ['data', 'id', 'valor', 'usuario_id', 'status_id', 'tipo_id'],
     order: { data: 'ASC' },

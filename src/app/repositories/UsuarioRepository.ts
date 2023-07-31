@@ -97,7 +97,7 @@ const deleteUsuario = async (id: number): Promise<IUsuario | null> => {
   // Busca o saldo atual do usuário com base nas transações concluídas
   const saldoAtual: number = await getSaldoUsuario(id) || 0;
 
-  // Verificar se o saldo é maior que zero
+  // // Verificar se o saldo é maior que zero
   if (saldoAtual > 0) {
     throw new BadRequestError('O usuário possui saldo em conta e não pode ser excluído.');
   }
@@ -119,4 +119,4 @@ const deleteUsuario = async (id: number): Promise<IUsuario | null> => {
 
 
 
-export default { getUsuarios, createUsuario, updateUsuario, getUsuarioId, deleteUsuario };
+export { getUsuarios, createUsuario, updateUsuario, getUsuarioId, deleteUsuario };
