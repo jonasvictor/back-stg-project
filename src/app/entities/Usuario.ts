@@ -29,14 +29,3 @@ class Usuario {
 }
 
 export default Usuario;
-
-// @BeforeInsert()
-// @BeforeUpdate()
-// validateFields() {
-//     if (!this.name) {
-//         throw new Error("O campo 'name' é obrigatório.");
-//     }
-//     if (!this.email) {
-//         throw new Error("O campo 'email' é obrigatório.");
-//     }
-// }
