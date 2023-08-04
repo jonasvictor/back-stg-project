@@ -105,7 +105,7 @@ const createDeposito = async (valor: number, usuario_id: number): Promise<ITrans
   
   // Cria o depósito
   const deposito: ITransacao = await createTransacao({
-    tipo_id: 3, // Depósito
+    tipo_id: 2, // Depósito
     status_id: 2, // Concluído
     valor: valor,
     data: new Date(),
@@ -139,7 +139,7 @@ const createSaque = async (valor: number, usuario_id: number): Promise<ITransaca
   
   // Cria o saque
   const saque: ITransacao = await createTransacao({
-    tipo_id: 2,
+    tipo_id: 1,
     status_id: 1,
     valor: valor * -1,
     data: new Date(),
@@ -200,7 +200,7 @@ const getExtratoTransacoesUsuario = async (usuario_id: number): Promise<ITransac
 const getExtratoDepositoUsuario = async (usuario_id: number): Promise<ITransacao[]> => {
   // Busca todas as transações de depósito do usuário pelo ID no db
   const extratoDeposito = await transacaoRepository.find({
-    where: { usuario_id, tipo_id: 3 }, // Tipo 3 depósito
+    where: { usuario_id, tipo_id: 2 }, // Tipo 3 depósito
     relations: ['usuario'],
     select: ['data', 'id', 'valor', 'usuario_id', 'status_id', 'tipo_id'],
     order: { data: 'ASC' },
@@ -221,7 +221,7 @@ const getExtratoDepositoUsuario = async (usuario_id: number): Promise<ITransacao
 const getExtratoSaqueUsuario = async (usuario_id: number): Promise<ITransacao[]> => {
   // Busca todas as transações de saque do usuário pelo ID no db
   const extratoSaque = await transacaoRepository.find({
-    where: { usuario_id, tipo_id: 2 }, // Tipo 2 saque
+    where: { usuario_id, tipo_id: 1 }, // Tipo 2 saque
     relations: ['usuario'],
     select: ['data', 'id', 'valor', 'usuario_id', 'status_id', 'tipo_id'],
     order: { data: 'ASC' },
