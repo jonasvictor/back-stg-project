@@ -2,7 +2,7 @@ import { createClient } from 'redis';
 
 // Cria o cliente do Redis
 const client = createClient({
-  url: 'redis://localhost:6379'
+  url: 'redis://service-redis:6379'
 });
 
 client.on('error', err => console.log('Redis Client Error', err));

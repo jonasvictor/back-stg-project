@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  redis:
+    image: redis
+    container_name: service-redis
+    ports:
+      - "6379:6379"
+
+  node-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: back-stg-project
+    ports:
+      - "3030:3030"
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: ${DB_USER}
+      DB_PASS: ${DB_PASS}
+      DB_NAME: ${DB_NAME}
