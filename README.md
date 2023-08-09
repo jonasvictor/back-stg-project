@@ -1,4 +1,3 @@
-````markdown
 # Projeto Backend
 
 Este projeto implementa um sistema de CRUD de usuários e funcionalidades relacionadas a transações como depósitos, saques, verificação de saldo e geração de extrato.
@@ -190,4 +189,3 @@ Steps to run this project:
 3. Run `npm i` command
 4. Setup database settings inside `data-source.ts` file
 5. Run `npm start` command
-````
