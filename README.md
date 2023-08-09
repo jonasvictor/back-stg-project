@@ -4,7 +4,6 @@ Este projeto implementa um sistema de CRUD de usuários e funcionalidades relaci
 
 ## Tecnologias Utilizadas
 
-- Node.js
 - TypeScript
 - Postgres
 - TypeORM
@@ -17,7 +16,7 @@ Antes de iniciar o projeto, você precisará ter instalados:
 
 - [Docker](https://www.docker.com/get-started)
 - [Docker Compose](https://docs.docker.com/compose/install/)
-- Node.js (recomendado a versão 16.20.1)
+- Node (recomendado a versão 16.20.1)
 - NPM (recomendado a versão 8.19.4)
 
 ## Iniciando o Projeto
