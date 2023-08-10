@@ -17,7 +17,7 @@ RUN npm install
 COPY . .
 
 # Exponha a porta em que a aplicação está rodando
-EXPOSE 3030
+EXPOSE 3000
 
 # Comando para iniciar a aplicação quando o contêiner for executado
 CMD ["npm", "start"]

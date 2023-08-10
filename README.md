@@ -39,7 +39,7 @@ Antes de iniciar o projeto, você precisará ter instalados:
    docker compose ps
    ```
 
-4. Acesse a aplicação em `http://localhost:3030`.
+4. Acesse a aplicação em `http://localhost:3000`.
 
 ## Endpoints
 
@@ -48,7 +48,7 @@ Antes de iniciar o projeto, você precisará ter instalados:
 #### Criar um novo usuário
 
 ```http
-POST localhost:3030/usuarios/
+POST localhost:3000/usuarios/
 ```
 
 Body:
@@ -64,19 +64,19 @@ Body:
 #### Listar todos os usuários
 
 ```http
-GET localhost:3030/usuarios/
+GET localhost:3000/usuarios/
 ```
 
 #### Buscar um usuário pelo ID
 
 ```http
-GET localhost:3030/usuarios/1
+GET localhost:3000/usuarios/1
 ```
 
 #### Atualizar um usuário pelo ID
 
 ```http
-PUT localhost:3030/usuarios/1
+PUT localhost:3000/usuarios/1
 ```
 
 Body:
@@ -91,13 +91,13 @@ Body:
 #### Excluir um usuário pelo ID
 
 ```http
-DELETE localhost:3030/usuarios/1
+DELETE localhost:3000/usuarios/1
 ```
 
 #### Autenticação de usuário
 
 ```http
-POST localhost:3030/login/
+POST localhost:3000/login/
 ```
 
 Body:
@@ -114,7 +114,7 @@ Body:
 #### Realizar um depósito
 
 ```http
-POST localhost:3030/transacoes/deposito
+POST localhost:3000/transacoes/deposito
 ```
 
 Body:
@@ -129,7 +129,7 @@ Body:
 #### Realizar um saque
 
 ```http
-POST localhost:3030/transacoes/saque
+POST localhost:3000/transacoes/saque
 ```
 
 Body:
@@ -144,31 +144,31 @@ Body:
 #### Obter o saldo de um usuário
 
 ```http
-GET localhost:3030/saldo/1
+GET localhost:3000/saldo/1
 ```
 
 #### Obter o extrato de todas as transações de um usuário
 
 ```http
-GET localhost:3030/extrato/1
+GET localhost:3000/extrato/1
 ```
 
 #### Obter o extrato de transações de depósito de um usuário
 
 ```http
-GET localhost:3030/extrato/deposito/1
+GET localhost:3000/extrato/deposito/1
 ```
 
 #### Obter o extrato de transações de saque de um usuário
 
 ```http
-GET localhost:3030/extrato/saque/1
+GET localhost:3000/extrato/saque/1
 ```
 
 #### Atualizar o status de uma transação
 
 ```http
-PUT localhost:3030/transacoes/1
+PUT localhost:3000/transacoes/1
 ```
 
 Body:
